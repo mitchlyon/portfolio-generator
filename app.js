@@ -1,4 +1,8 @@
+
+
 const inquirer = require('inquirer');
+
+
 
 const promptUser = () => {
   return inquirer.prompt([
@@ -133,16 +137,32 @@ Add a New Project
 
 };
 
+
+const fs = require('fs')
+const generatePage = require('./src/page-template.js');
+
+
 promptUser()
   .then(promptProject)
   .then(portfolioData => {
     const pageHTML = generatePage(portfolioData);
 
-    fs.writeFile('./index.html', pageHTML, err => {
-      if (err) throw new Error(err);
-
+    fs.writeFile('./dist/index.html', pageHTML, err => {
+      if (err) {
+        console.log(err);
+        return;
+      } 
       console.log('Page created! Check out index.html in this directory to see it!');
+
+      fs.copyFile('./src/style.css', './dist/style.css', err => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log('Style sheet copied successfully!')
+      });
     });
+  
   });
 
 
@@ -152,9 +172,9 @@ promptUser()
 
 
 
-const fs = require('fs');
 
-const generatePage = require('./src/page-template.js');
+
+
 
 
 // fs.writeFile('./index.html', generatePage(name, github), err => {
